@@ -1,0 +1,114 @@
+Q1.->select * from customers 
+left join orders on  c_id = o_customerid
+where o_customerid is null
+
+
+Q2. ->select category, max(price)
+             from products
+             group by category
+
+Q3. -> select category, min(price)
+             from products
+             group by category
+
+Q4.-> select category,industry, count(*) as 'number'
+from field
+group by category,industry
+
+Q5.-> select date(order_placed_date)
+     , count(id) as num_orders
+     , sum(order_total) as daily_total
+  from [table]
+ group by date(order_placed_date)
+
+Q6.-> select c.customerid, sum(ord.quantity*p.price) as 
+total_amount
+from customers c inner join orders o
+     on c.customerid = o.customerid join
+     orderdetails ord
+     on o.orderid = ord.orderid join
+     products p
+     on ord.productid = p.productid
+group by customerid;
+
+Q7.-> select category, count(*) as noofitems
+from items i
+group by category;
+
+Q8.-> select name,
+       count(id) as ct, 
+       group_concat(id) as ids
+from names
+group by name
+order by ct desc;
+Q9.-> select c.customerid,o.orderid,sum(ord.quantity*p.price) as total_amount
+from customers c inner join orders o
+inner join products p
+inner join orderdetails ord
+on c.customerid = o.customerid
+and o.orderid = ord.orderid
+and ord.productid = p.productid
+group by c.customerid,o.orderid
+
+Q10.-> select dateadded, count(custid)
+from tbl
+group by dateadded
+
+Q11.->
+select * 
+from tblproducts 
+where datediff(day, getdate(), dateexpiry) < 15
+
+Q12.-> select
+    sub1.cid,
+    sub1.totalorders,
+    sub2.totaldollaramount
+from
+    (
+        select
+            cid,
+            count(order.orderid) as totalorders
+        from [order]
+        group by cid
+    ) as sub1
+    inner join
+    (
+        select
+            cid,
+            sum(orderitem.quantity*orderitem.saleprice)
+                as totaldollaramount
+        from orderitem inner join [order]
+        on orderitem.orderid = [order].orderid
+        group by cid
+    ) as sub2
+    on sub1.cid = sub2.cid
+order by sub1.totalorders desc;
+
+Q13.-> date(c_day) as date, 
+                sum(total) as total_sale 
+           from calendar c 
+left outer join sale s 
+             on c.day = s.c_date
+          where c.month = 201310
+       group by c_day
+         having c_day <= max(s.c_date); 
+
+
+Q14.-> select * from (
+    select category,product_id,
+    rank() over (partition by category order by discount desc, product_id asc) as product_rank
+    from product) x
+where x.product_rank=1
+order by category;
+
+Q15.-> select dateadded, count(custid)
+from responses
+where dateadded >=dateadd(day,datediff(day,0,getdate())- 7,0)
+group by dateadded
+
+
+
+
+
+
+
